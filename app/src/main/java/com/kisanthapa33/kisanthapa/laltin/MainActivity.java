@@ -1,229 +1,310 @@
 package com.kisanthapa33.kisanthapa.laltin;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.media.MediaPlayer;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    private Camera camera;
-    private ImageButton mPowerButton;
-    private boolean isFlashOn;
-    private boolean hasFlash;
-    Camera.Parameters params;
-    MediaPlayer mp;
+    private CardView mLargeCircularCardView;
+    private ToggleButton mSwitchButton;
+    private TextView mTextPowerOnMessage;
+    private ImageView mInfoButton;
 
+    //Button Animator
+    //private Animator circleGrow;
 
-    //App defined int constant
-    private int MY_PERMISSIONS_REQUEST_CAMERA = 4;
+    //Animation instances
+    private RotateAnimation rotateAnimation;
+    private ObjectAnimator objectAnimator;
+
+    //Camera Feature
+    private boolean hasCameraFeature;
+
+    //Camera permission code
+    //private static final int REQUEST_CAMERA_PERMISSION_CODE = 11;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLargeCircularCardView = findViewById(R.id.circularCardView);
 
-        mPowerButton = findViewById(R.id.imageButton);
-        // First check if device is supporting flashlight or not
-        hasFlash = getApplicationContext().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+        mSwitchButton = findViewById(R.id.switchButton);
+        mTextPowerOnMessage = findViewById(R.id.txtPowerOnMessage);
+        mInfoButton = findViewById(R.id.btnInfo);
 
-        if (!hasFlash) {
-            // device doesn't support flash
-            // Show alert message and close the application
-            AlertDialog alert = new AlertDialog.Builder(MainActivity.this)
-                    .create();
-            alert.setTitle("Error");
-            alert.setMessage("Sorry, your device doesn't support flash light!");
-            alert.setButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            alert.show();
-            return;
-        }
+        //Checking camera feature available
+        hasCameraFeature = getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
 
-        // get the camera
-        getCamera();
+        mSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (hasCameraFeature) {
 
-        // displaying button image
-        toggleButtonImage();
+                    CameraManager mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
-        // Switch button click event to toggle flash on/off
-        mPowerButton.setOnClickListener(new View.OnClickListener() {
+                    if (isChecked) mTextPowerOnMessage.setText("ON");
 
+                    else mTextPowerOnMessage.setText("OFF");
+
+                    try {
+                        assert mCameraManager != null;
+                        String mCameraId = mCameraManager.getCameraIdList()[0];
+
+                        mCameraManager.setTorchMode(mCameraId, isChecked);
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                } else
+                    showNoFlashError();
+            }
+        });
+
+//        mSwitchButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(getApplicationContext(), "Switch On", Toast.LENGTH_SHORT).show();
+//
+//                //circularGrowCardView(mCircularCardView);
+//
+////                Camera cam = Camera.open();
+////                Camera.Parameters p = cam.getParameters();
+////                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+////                cam.setParameters(p);
+////                cam.startPreview();
+//
+////                checkPermission(Manifest.permission.CAMERA, REQUEST_CAMERA_PERMISSION_CODE);
+//
+//                if (hasCameraFeature) {
+//
+//                    CameraManager mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+//
+//                    if (true) {
+//                        isFlashOn = true;
+//                        mTextPowerOnMessage.setText("ON");
+//
+//                        try {
+//                            assert mCameraManager != null;
+//                            String mCameraId = mCameraManager.getCameraIdList()[0];
+//
+//                            mCameraManager.setTorchMode(mCameraId, true);
+//                        } catch (CameraAccessException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                } else
+//                    showNoFlashError();
+//            }
+//        });
+
+        mInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isFlashOn) {
-                    // turn off flash
-                    turnOffFlash();
-                } else {
-                    // turn on flash
-                    turnOnFlash();
-                }
+
+                //Toast.makeText(MainActivity.this, "TEST", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, InfoActivity.class));
             }
         });
 
+        animateLargeCardView(mLargeCircularCardView);
+
+        animateSunIcon();
+
     }
 
-    // Get the camera
-    private void getCamera() {
-        if (camera == null) {
-            try {
-                camera = Camera.open();
-                params = camera.getParameters();
-            } catch (RuntimeException e) {
-                //Log.e("Camera Error. Failed to Open. Error: ", e.getMessage());
+    private void animateSunIcon() {
+        rotateAnimation = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(12000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        ImageView mSunIcon = findViewById(R.id.sunIcon);
+        mSunIcon.startAnimation(rotateAnimation);
+    }
+
+    private void animateLargeCardView(CardView mCircularCardView) {
+        objectAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                mCircularCardView,
+                PropertyValuesHolder.ofFloat("scaleX", 1.2f),
+                PropertyValuesHolder.ofFloat("scaleY", 1.2f));
+        objectAnimator.setDuration(2200);
+
+        objectAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        objectAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        objectAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
             }
-        }
-    }
-
-    // Turning On flash
-    private void turnOnFlash() {
-        if (!isFlashOn) {
-            if (camera == null || params == null) {
-                return;
-            }
-            // play sound
-            playSound();
-
-            params = camera.getParameters();
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-            camera.setParameters(params);
-            camera.startPreview();
-            isFlashOn = true;
-
-            // changing button/switch image
-            toggleButtonImage();
-        }
-
-    }
-
-
-    // Turning Off flash
-    private void turnOffFlash() {
-        if (isFlashOn) {
-            if (camera == null || params == null) {
-                return;
-            }
-            // play sound
-            playSound();
-
-            params = camera.getParameters();
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-            camera.setParameters(params);
-            camera.stopPreview();
-            isFlashOn = false;
-
-            // changing button/switch image
-            toggleButtonImage();
-        }
-    }
-
-    // Playing sound
-    // will play button toggle sound on flash on / off
-    private void playSound() {
-        if (isFlashOn) {
-            mp = MediaPlayer.create(MainActivity.this, R.raw.on_sound);
-        } else {
-            mp = MediaPlayer.create(MainActivity.this, R.raw.off_sound);
-        }
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
             @Override
-            public void onCompletion(MediaPlayer mp) {
-                // TODO Auto-generated method stub
-                mp.release();
+            public void onAnimationEnd(Animator animation) {
+
             }
-        });
-        mp.start();
-    }
 
-    /*
-     * Toggle switch button images
-     * changing image states to on / off
-     * */
-    private void toggleButtonImage() {
-        if (isFlashOn) {
-            mPowerButton.setImageResource(R.drawable.on);
-        } else {
-            mPowerButton.setImageResource(R.drawable.off);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // on pause turn off the flash
-        turnOffFlash();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // on resume turn on the flash
-        if (hasFlash)
-            turnOnFlash();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // on starting the app get the camera params
-        getCamera();
-    }
-
-    @Override
-    protected void onStop() {
-
-        super.onStop();
-
-        // on stop release the camera
-        if (camera != null) {
-            camera.release();
-            camera = null;
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-
-        AlertDialog.Builder exit_Alert = new AlertDialog.Builder(MainActivity.this);
-        exit_Alert.setMessage("Are you sure want to exit?");
-        exit_Alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
             }
         });
-        exit_Alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
+
+        objectAnimator.start();
+    }
+
+
+    public void showNoFlashError() {
+        AlertDialog alert = new AlertDialog.Builder(this)
+                .create();
+        alert.setTitle("Oops!");
+        alert.setMessage("Flash not available in this device...");
+        alert.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 finish();
             }
         });
-
-        AlertDialog dialog = exit_Alert.create();
-        dialog.show();
+        alert.show();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
+
+    // Function to check and request permission.
+//    public void checkPermission(String permission, int requestCode) {
+//        if (ContextCompat.checkSelfPermission(MainActivity.this, permission)
+//                == PackageManager.PERMISSION_DENIED) {
+//
+//            // Requesting the permission
+//            ActivityCompat.requestPermissions(MainActivity.this,
+//                    new String[]{permission},
+//                    requestCode);
+//        } else {
+//            Toast.makeText(MainActivity.this,
+//                    "Permission already granted",
+//                    Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode,
+//                permissions,
+//                grantResults);
+//
+//        if (requestCode == REQUEST_CAMERA_PERMISSION_CODE) {
+//
+//            // Checking whether user granted the permission or not.
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                // Showing the toast message
+//                Toast.makeText(MainActivity.this,
+//                        "Camera Permission Granted",
+//                        Toast.LENGTH_SHORT)
+//                        .show();
+//            } else {
+//                Toast.makeText(MainActivity.this,
+//                        "Camera Permission Denied",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+
+//    @Override
+//    protected void onPause() {
+//        if (objectAnimator.isRunning())
+//            objectAnimator.end();
+//        super.onPause();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        if (objectAnimator.isRunning())
+//            objectAnimator.end();
+//        super.onDestroy();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        if (objectAnimator.isRunning())
+//            objectAnimator.end();
+//
+//        super.onStop();
+//    }
+
+//    private void circularGrowCardView(final View view) {
+//
+//        //float finalRadius = Math.max(view.getWidth(), view.getHeight());
+//        final long delay = 2000;
+//
+//        // create the animator for this view (the start radius is zero)
+//        circleGrow = ViewAnimationUtils.createCircularReveal(
+//                view,
+//                view.getHeight() / 2,
+//                view.getWidth() / 2,
+//                0,
+//                view.getHeight());
+//
+//        circleGrow.setDuration(delay);
+//
+//        if (view.getVisibility() == View.INVISIBLE)
+//            view.setVisibility(View.VISIBLE);
+//
+//        circleGrow.start();
+//
+//        circleGrow.addListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                //view.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//            }
+//        });
+//
+//    }
+//
+
 
 }

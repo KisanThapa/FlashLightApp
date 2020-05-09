@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#5433C8</color>
+    <color name="colorPrimaryDark">#1AEA03</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBlack">#000000</color>
     <color name="colorBackground">#FFD839DE</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+    <!--Card Colors-->
+    <color name="colorLargestCard">#3C2605</color>
+    <color name="colorMediumCard">#7A4D0A</color>
+    <color name="colorSmallestCard">#986518</color>
+
+    <color name="colorTheme">#331F02</color>
 </resources>
