@@ -3,4 +3,8 @@
     <string name="laltin">लालटीन</string>
     <string name="power_button">Power Button</string>
     <string name="developed_by">Developed By:</string>
+
+    <string name="add_banner_id">ca-app-pub-8621981401777976/9655256105</string>
+    <string name="add_interstitial_id">ca-app-pub-8621981401777976/2978344728</string>
+    <string name="add_rewarded_id">ca-app-pub-8621981401777976/7117556827</string>
 </resources>

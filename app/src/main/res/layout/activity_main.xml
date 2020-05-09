@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
-    tools:context="com.example.kisanthapa.laltin.MainActivity">
+    tools:context="com.kisanthapa33.kisanthapa.laltin.MainActivity">
+
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="40dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
         android:text="@string/laltin"
         android:textColor="@android:color/background_light"
@@ -27,35 +28,32 @@
         android:id="@+id/imageButton"
         android:layout_width="310dp"
         android:layout_height="140dp"
-        android:layout_marginBottom="113dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:contentDescription="@string/power_button"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.673"
         app:srcCompat="@drawable/off" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="30dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/developed_by"
+        android:textColor="@android:color/background_light"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textColor="@android:color/background_light"
         app:layout_constraintTop_toBottomOf="@+id/imageButton"
         app:layout_constraintVertical_bias="0.716" />
 
@@ -63,10 +61,10 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Kisan Thapa"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
@@ -80,10 +78,11 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="version 1.0"
         android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
         android:layout_marginRight="44dp"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:text="version 1.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
 
 </android.support.constraint.ConstraintLayout>

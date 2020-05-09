@@ -1,4 +1,4 @@
-package com.example.kisanthapa.laltin;
+package com.kisanthapa33.kisanthapa.laltin;
 
 import org.junit.Test;
 

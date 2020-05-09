@@ -1,4 +1,4 @@
-package com.example.kisanthapa.laltin;
+package com.kisanthapa33.kisanthapa.laltin;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.kisanthapa.laltin", appContext.getPackageName());
+        assertEquals("com.kisanthapa33.kisanthapa.laltin", appContext.getPackageName());
     }
 }
