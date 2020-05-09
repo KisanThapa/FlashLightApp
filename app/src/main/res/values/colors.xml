@@ -13,4 +13,5 @@
     <color name="colorSmallestCard">#986518</color>
 
     <color name="colorTheme">#331F02</color>
+    <color name="infoCardColors">#70430C</color>
 </resources>

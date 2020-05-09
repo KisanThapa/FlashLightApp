@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Flash Light</string>
-    <string name="laltin">लालटीन</string>
     <string name="power_button">Power Button</string>
     <string name="developed_by">Developed By:</string>
+    <string name="flashlight_nversion_1_3">FlashLight\nv 2.0</string>
+    <string name="share_this_app">Share This App</string>
+    <string name="rate_this_app">Rate This App</string>
+    <string name="privacy_policy">Privacy Policy</string>
 
 </resources>
