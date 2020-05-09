@@ -30,8 +30,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
 
-
-        mPowerButton = (ImageButton) findViewById(R.id.imageButton);
+        mPowerButton = findViewById(R.id.imageButton);
         // First check if device is supporting flashlight or not
         hasFlash = getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
